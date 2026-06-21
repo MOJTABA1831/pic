@@ -1,33 +1,121 @@
 <!DOCTYPE html>
-<html>
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music</title>
     <style>
-        * {
+        body, html {
             margin: 0;
             padding: 0;
-        }
-        
-        body, html {
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #000;
+            background-color: #000; /* پس زمینه مشکی */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Tahoma, sans-serif;
         }
-        
-        img {
+
+        /* کادر نگهدارنده عکس */
+        .container {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             width: 100%;
             height: 100%;
-            object-fit: contain;
+        }
+
+        /* عکس با سایز اصلی (بدون کشیدگی) */
+        #bgImage {
+            max-width: 90%;
+            max-height: 90%;
+            width: auto;
+            height: auto;
+            display: block;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        /* دکمه شیشه‌ای کدر وسط صفحه */
+        #playButton {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background: rgba(0, 0, 0, 0.6); /* شیشه‌ای تیره */
+            backdrop-filter: blur(5px); /* افکت بلور */            border-radius: 50%;            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        /* علامت مثلث پخش */
+        #playIcon {
+            width: 0; 
+            height: 0; 
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 25px solid white;
+            margin-left: 5px;
+        }
+
+        /* انیمیشن ضربان */
+        @keyframes pulse {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            50% { transform: translate(-50%, -50%) scale(1.1); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* کلاس مخفی کردن دکمه */
+        .hidden {
+            opacity: 0;
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <img src="IMG_20260621_162143_131.png" onclick="document.getElementById('myAudio').play()">
-    <audio id="myAudio">
-        <source src="ba.to.mp3" type="audio/mpeg">
-    </audio>
+
+    <div class="container">
+        <!-- عکس -->
+        <img id="bgImage" src="IMG_20260621_162143_131.png" alt="Photo">
+        
+        <!-- دکمه پخش -->
+        <div id="playButton" class="pulse">
+            <div id="playIcon"></div>
+        </div>
+    </div>
+    <!-- آهنگ -->
+    <audio id="music" src="ba.to.mp3" preload="auto"></audio>
+    <script>
+        const btn = document.getElementById('playButton');
+        const audio = document.getElementById('music');
+
+        btn.addEventListener('click', () => {
+            if (audio.paused) {
+                audio.play().then(() => {
+                    // اگر پخش موفق بود، دکمه محو شود
+                    btn.classList.add('hidden');
+                }).catch(error => {
+                    console.log("خطا در پخش: ", error);
+                    alert("لطفاً چند لحظه صبر کنید تا آهنگ لود شود.");
+                });
+            } else {
+                audio.pause();
+                btn.classList.remove('hidden');
+            }
+        });
+    </script>
+
 </body>
 </html>
